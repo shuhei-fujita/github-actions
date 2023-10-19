@@ -1,0 +1,17 @@
+name: reviewdog
+on: [pull_request]
+jobs:
+  reviewdog:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code.
+      uses: actions/checkout@v2
+    - name: Set up reviewdog
+      uses: reviewdog/action-setup@v1
+      with:
+        reviewdog_version: latest
+    - name: Run golangci-lint with reviewdog
+      uses: reviewdog/action-golangci-lint@v2
+      with:
+        github_token: ${{ secrets.TOKEN_REVIEWDOG }}
+        reporter: github-pr-review
