@@ -3,6 +3,9 @@ on: [pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      BEFORE_COMMIT: ${{ github.event.before }}
+      AFTER_COMMIT: ${{ github.event.after }}
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
