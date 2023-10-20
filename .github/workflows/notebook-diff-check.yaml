@@ -20,7 +20,7 @@ jobs:
     - name: Install GitHub CLI
       run: sudo apt-get install -y gh
     - name: Authenticate GitHub CLI
-      run: gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+      run: gh auth login --with-token <<< "${{ secrets.ACCESS_TOKEN }}"
     - name: Comment PR with notebook diff
       run: |
         DIFF=$(BEFORE_COMMIT=${{ github.event.before }} AFTER_COMMIT=${{ github.event.after }} ./startup-for-github-actions.sh)
