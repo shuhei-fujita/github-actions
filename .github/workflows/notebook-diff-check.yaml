@@ -12,4 +12,4 @@ jobs:
       env:
         BEFORE_COMMIT: ${{ github.event.before }}
         AFTER_COMMIT: ${{ github.event.after }}
-      run: ./startup-for-github-actions.sh
+      run: ../startup-for-github-actions.sh
