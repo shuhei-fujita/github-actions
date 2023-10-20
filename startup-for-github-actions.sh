@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 自分自身に実行権限を付与
-chmod +x /app/startup.sh
+chmod +x /app/startup-for-github-actions.sh
 
 cd /app  # 作業ディレクトリを/appに設定
 
