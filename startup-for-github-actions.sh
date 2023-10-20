@@ -1,19 +1,15 @@
 #!/bin/bash
 
-# 自分自身に実行権限を付与
-chmod +x /app/startup-for-github-actions.sh
+# 作業ディレクトリに移動（GitHub Actionsでは通常'/github/workspace'です）
+cd $GITHUB_WORKSPACE
 
-cd /app  # 作業ディレクトリを/appに設定
+# nbdimeをインストール
+pip install nbdime
 
-# 以降は同じ
-if [ -d .git ]; then
-    pip install nbdime
-    git fetch origin
-    BEFORE_COMMIT=${{ github.event.before }}
-    AFTER_COMMIT=${{ github.event.after }}
-    for notebook in $(git diff --name-only $BEFORE_COMMIT $AFTER_COMMIT | grep '.ipynb$'); do
-        nbdiff <(git show $BEFORE_COMMIT:$notebook) <(git show $AFTER_COMMIT:$notebook)
-    done
-else
-    echo 'Not a git repository'
-fi
+# リモートリポジトリから最新の情報を取得
+git fetch origin
+
+# 差分があるNotebookファイルを確認して、それぞれの差分を表示
+for notebook in $(git diff --name-only $BEFORE_COMMIT $AFTER_COMMIT | grep '.ipynb$'); do
+    nbdiff <(git show $BEFORE_COMMIT:$notebook) <(git show $AFTER_COMMIT:$notebook)
+done
