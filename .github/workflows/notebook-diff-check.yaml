@@ -1,0 +1,24 @@
+name: Notebook Diff Check
+on:
+  pull_request:
+    paths:
+      - '**.ipynb'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      run: pip install nbdime
+    - name: Run Notebook Diff
+      run: |
+        cd $GITHUB_WORKSPACE  # GitHub Actionsの作業ディレクトリに移動
+        for notebook in $(git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep '.ipynb$'); do
+          nbdiff ${{ github.event.before }}:$notebook ${{ github.event.after }}:$notebook
+        done
