@@ -1,0 +1,19 @@
+name: Create or Update PR
+
+on:
+  push:
+    branches:
+      - feature/*
+
+jobs:
+  check-pr:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Check if PR exists
+      run: |
+        pr_exists=$(gh pr list --base develop --head ${{ github.ref }} --json number | jq length)
+        echo "PR_EXISTS=$pr_exists" >> $GITHUB_ENV
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
