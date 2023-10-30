@@ -1,0 +1,19 @@
+name: Check Base Branch
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+
+jobs:
+  check-base-branch:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check PR base branch
+      run: |
+        if [[ "${{ github.event.pull_request.base.ref }}" == 'main' && "${{ github.event.pull_request.head.ref }}" =~ feature/* ]]; then
+          echo "Closing this PR because it's not against develop."
+          gh pr close ${{ github.event.pull_request.number }}
+          gh pr comment ${{ github.event.pull_request.number }} --body "This PR was closed because the base branch should be 'develop', not 'main'. Please open a new PR against 'develop'."
+        fi
