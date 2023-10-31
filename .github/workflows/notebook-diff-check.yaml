@@ -1,0 +1,27 @@
+name: notebook-diff-check
+on: [pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      BEFORE_COMMIT: ${{ github.event.before }}
+      AFTER_COMMIT: ${{ github.event.after }}
+    if: false
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Make script executable
+      run: chmod +x ./startup-for-github-actions.sh
+    - name: Run startup.sh with environment variables
+      run: BEFORE_COMMIT=${{ github.event.before }} AFTER_COMMIT=${{ github.event.after }} ./startup-for-github-actions.sh
+    - name: Comment PR with notebook diff
+      run: |
+        DIFF=$(BEFORE_COMMIT=${{ github.event.before }} AFTER_COMMIT=${{ github.event.after }} ./startup-for-github-actions.sh)
+        echo "$DIFF" > diff.txt
+        gh pr comment ${{ github.event.pull_request.number }} --body "Notebook Diff:\n\`\`\`\n$(cat diff.txt)\n\`\`\`"
+      env:
+        GH_TOKEN: ${{ secrets.ACTIONS_TOKEN }}
